@@ -10,15 +10,20 @@ public class ValorMonetario implements IValorMonetario {
 	}
 	
 	public IValorMonetario adiciona(IValorMonetario vm) {
-		if(vm instanceof ValorMonetario) {
-			if(((ValorMonetario) vm).getMoeda().equals(this.moeda)) {
-				return new ValorMonetario(this.valor + ((ValorMonetario)vm).valor, this.moeda);
-			}
-			else {
-				return new CarteiraValorMonetario(new ValorMonetario[]{this, (ValorMonetario)vm});
-			}
+		return vm.adicionar(this); 
+	}
+	
+	public IValorMonetario adicionar(ValorMonetario vm) {
+		if(((ValorMonetario) vm).getMoeda().equals(this.moeda)) {
+			return new ValorMonetario(this.valor + ((ValorMonetario)vm).valor, this.moeda);
 		}
-		throw new RuntimeException("ainda nao suportado"); 
+		else {
+			return new CarteiraValorMonetario(new ValorMonetario[]{this, (ValorMonetario)vm});
+		}
+	}
+	
+	public IValorMonetario adicionar(CarteiraValorMonetario vm) {
+		return vm.adicionar(this);
 	}
 	
 	public Double getValor() {
@@ -27,6 +32,10 @@ public class ValorMonetario implements IValorMonetario {
 
 	public String getMoeda() {
 		return moeda; 
+	}
+	@Override
+	public String toString() {
+		return moeda + ": " + valor; 
 	}
 	
 	@Override

@@ -14,21 +14,30 @@ public class CarteiraValorMonetario implements IValorMonetario {
 	}
 	
 	public IValorMonetario adiciona(IValorMonetario vm) {
-		if(vm instanceof ValorMonetario) {
-			ValorMonetario valor = (ValorMonetario)vm; 
-			ValorMonetario soma = null;
-			if(valores.contains(valor.getMoeda())) {
-				ValorMonetario existente = valores.get(valor.getMoeda());
-				soma = new ValorMonetario(existente.getValor() + valor.getValor(), valor.getMoeda());		
-			} else {
-				soma = valor; 
-			}
-			valores.put(soma.getMoeda(), soma);
-			return this; 
-		}
-		throw new RuntimeException("ainda nao implementado");
+		return vm.adicionar(this);
 	}
 	
+	@Override
+	public IValorMonetario adicionar(ValorMonetario vm) {
+		ValorMonetario valor = (ValorMonetario)vm; 
+		ValorMonetario soma = null;
+		if(valores.containsKey(valor.getMoeda())) {
+			ValorMonetario existente = valores.get(valor.getMoeda());
+			soma = new ValorMonetario(existente.getValor() + valor.getValor(), valor.getMoeda());		
+		} else {
+			soma = valor; 
+		}
+		valores.put(soma.getMoeda(), soma);
+		return this; 
+	}
+
+	@Override
+	public IValorMonetario adicionar(CarteiraValorMonetario vm) {
+		CarteiraValorMonetario outraCarteira = (CarteiraValorMonetario)vm;
+		outraCarteira.valores.values().forEach(v -> this.adiciona(v));
+		return this;
+	}
+
 	@Override
 	public boolean equals(Object other) {
 		if(other instanceof CarteiraValorMonetario) {
